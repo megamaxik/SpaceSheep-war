@@ -7,7 +7,8 @@ snd_dir = path.join(path.dirname(__file__), 'sound')
 WIDTH = 1400
 HEIGHT = 1000
 FPS = 60
-
+issound = True
+dif = 0.75
 # Задаем цвета
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -38,8 +39,8 @@ expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, 'expl3.mp3')))
 def draw_hp_bar(surf, x, y, pct):
     if pct < 0:
         pct = 0
-    BAR_LENGTH = 100
-    BAR_HEIGHT = 10
+    BAR_LENGTH = 500
+    BAR_HEIGHT = 50
     fill = (pct / 100) * BAR_LENGTH
     outline_rect = pygame.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
     fill_rect = pygame.Rect(x, y, fill, BAR_HEIGHT)
@@ -51,6 +52,9 @@ def newenemy():
     m = enemy()
     all_sprites.add(m)
     mobs.add(m)
+
+
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -82,9 +86,6 @@ class enemy(pygame.sprite.Sprite):
             self.rect.y = random.randrange(HEIGHT - self.rect.height)
             self.rect.x = WIDTH - 50
             self.speedx = -3
-
-    def dead(self):
-        self.kill()
 
 
 class Player(pygame.sprite.Sprite):
@@ -130,22 +131,25 @@ class Player(pygame.sprite.Sprite):
     def dead(self):
         self.kill()
 
-
+issound = True
 def set_sound(value, sound):
     global issound
     issound = sound
     pass
 
 def set_difficulty(value, difficulty):
-
+    global dif
+    dif = difficulty
     pass
 
 
 
 def start_the_game():
+    global issound
+    global dif
     player = Player()
     all_sprites.add(player)
-    for i in range(8):
+    for i in range(int(8 * dif)):
         m = enemy()
         all_sprites.add(m)
         mobs.add(m)
@@ -158,25 +162,27 @@ def start_the_game():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    shoot_sound.play()
+                    if issound == True:
+                        shoot_sound.play()
                     player.shoot()
         all_sprites.update()
         hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
         for hit in hits:
-            expl_sounds[0].play()
+            if issound == True:
+                expl_sounds[0].play()
 
             newenemy()
 
-        hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_circle)
+        hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_rect_ratio(0.6))
         for hit in hits:
-            player.hp -= 10
-            expl_sounds[2].play()
+            player.hp -= int(10 * dif)
+            if issound == True:
+                expl_sounds[2].play()
             newenemy()
             if player.hp <= 0:
-                expl_sounds[1].play()
+                if issound == True:
+                    expl_sounds[1].play()
                 all_sprites.remove(player)
-                for i in range(8):
-                    all_sprites.remove(m)
                 running = False
         screen.blit(bg,(0, 0))
         all_sprites.draw(screen)
@@ -191,7 +197,7 @@ class MainScreen():
     bullet_img = pygame.image.load(path.join(img_dir, "shot.png")).convert()
     menu = pygame_menu.Menu('   Space Sheep War', 400, 400, theme=pygame_menu.themes.THEME_DARK)
     menu.add.selector("Sound :", [("on", True), ("off", False)], onchange=set_sound)
-    menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+    menu.add.selector('Difficulty :', [('Easy', 0.75), ('normal', 1), ('Hard', 2)], onchange=set_difficulty)
     menu.add.button('Play', start_the_game)
     menu.add.button('Quit', pygame_menu.events.EXIT)
     menu.mainloop(screen)
