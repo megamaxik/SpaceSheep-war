@@ -36,6 +36,7 @@ expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, 'expl1.mp3')))
 expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, 'expl2.wav')))
 expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, 'expl3.mp3')))
 
+
 def draw_hp_bar(surf, x, y, pct):
     if pct < 0:
         pct = 0
@@ -153,11 +154,16 @@ def start_the_game():
         m = enemy()
         all_sprites.add(m)
         mobs.add(m)
-
     running = True
+    counter, text = 300, "300".rjust(3)
+    pygame.time.set_timer(pygame.USEREVENT, 1000)
+    font = pygame.font.SysFont(None, 72)
     while running:
         clock.tick(FPS)
         for event in pygame.event.get():
+            if event.type == pygame.USEREVENT:
+                counter -= 1
+                text = "Время до взрыва: " + str(counter).rjust(3) if counter > 0 else 'время вышло!'
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
@@ -186,8 +192,10 @@ def start_the_game():
                 running = False
         screen.blit(bg,(0, 0))
         all_sprites.draw(screen)
+        screen.blit(font.render(text, True, (180, 0, 0)), (550, 10))
         draw_hp_bar(screen, 5, 5, player.hp)
         pygame.display.flip()
+
 
 class MainScreen():
     bg = pygame.image.load("images\Space.png").convert_alpha()
