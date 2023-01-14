@@ -59,7 +59,7 @@ def newenemy():
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(bullet_img, (80, 40))
+        self.image = pygame.transform.scale(bullet_img, (50, 20))
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.bottom = y
@@ -92,7 +92,7 @@ class enemy(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(player_img, (160, 100))
+        self.image = pygame.transform.scale(player_img, (160, 90))
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.centerx = WIDTH - (WIDTH - 100)
