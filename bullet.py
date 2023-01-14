@@ -4,8 +4,9 @@ import pygame
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, bullet_img, x, y, *groups):
         super().__init__(*groups)
-        self.image = pygame.transform.scale(bullet_img, (80, 40))
+        self.image = pygame.transform.scale(bullet_img, (60, 40))
         self.rect = self.image.get_rect()
+        self.image.set_colorkey((0,0,0))
         self.rect.bottom = y
         self.rect.centerx = x
         self.speedx = 10

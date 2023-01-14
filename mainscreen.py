@@ -40,7 +40,7 @@ expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, 'expl3.mp3')))
 def draw_hp_bar(surf, x, y, pct):
     if pct < 0:
         pct = 0
-    BAR_LENGTH = 500
+    BAR_LENGTH = 300
     BAR_HEIGHT = 50
     fill = (pct / 100) * BAR_LENGTH
     outline_rect = pygame.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
@@ -176,7 +176,6 @@ def start_the_game():
         for hit in hits:
             if issound == True:
                 expl_sounds[0].play()
-
             newenemy()
 
         hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_rect_ratio(0.6))

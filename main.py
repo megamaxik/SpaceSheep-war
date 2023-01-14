@@ -79,22 +79,24 @@ def start_game():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     if issound:
-                        expl_sounds[3].play()
+                        expl_sounds[0].play()
                     player.shoot(bullet_img, bullets, all_sprites)
         all_sprites.update((WIDTH, HEIGHT))
         hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
         for _ in hits:
             if issound:
-                expl_sounds[0].play()
+                Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
+                expl_sounds[1].play()
 
         hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_rect_ratio(0.6))
         for _ in hits:
             player.hp -= int(10 * dif)
+            Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
             if issound:
-                expl_sounds[2].play()
+                expl_sounds[3].play()
             if player.hp <= 0:
                 if issound:
-                    expl_sounds[1].play()
+                    expl_sounds[2].play()
                 all_sprites.remove(player)
                 running = False
         screen.blit(bg, (0, 0))

@@ -7,6 +7,7 @@ class Character(pygame.sprite.Sprite):
     def __init__(self, image, w, h, *groups):
         super().__init__(*groups)
         self.image = pygame.transform.scale(image, (w, h))
+        self.image.set_colorkey((0,0,0))
         self.rect = self.image.get_rect()
 
     def update(self, *args):
@@ -29,6 +30,10 @@ class Enemy(Character):
     def update(self, *args):
         if args:
             self.move(args[0])
+            if self.rect.left < 0 + 10:
+                self.rect.y = random.randrange(args[1] - self.rect.height)
+                self.rect.x = args[0] - 50
+                self.speedx = -3
 
 
 class Player(Character):
