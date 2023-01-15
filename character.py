@@ -2,14 +2,20 @@ import pygame
 import random
 from bullet import Bullet
 
+Anim_player = [pygame.image.load("images/animations/player/1pl.png"), pygame.image.load("images/animations/player/2pl.png"),
+        pygame.image.load("images/animations/player/3pl.png")]
+Anim_enemy = [pygame.image.load("images/animations/enemy/1en.png"), pygame.image.load("images/animations/enemy/2en.png"),
+        pygame.image.load("images/animations/enemy/3en.png")]
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, image, w, h, *groups):
         super().__init__(*groups)
+        self.w = w
+        self.h = h
         self.image = pygame.transform.scale(image, (w, h))
         self.image.set_colorkey((0,0,0))
         self.rect = self.image.get_rect()
-
+        self.tick = 0
     def update(self, *args):
         pass
 
@@ -34,7 +40,14 @@ class Enemy(Character):
                 self.rect.y = random.randrange(args[1] - self.rect.height)
                 self.rect.x = args[0] - 50
                 self.speedx = -3
-
+        if self.tick <= 10:
+            self.image = pygame.transform.scale(Anim_enemy[0], (self.w, self.h))
+        if self.tick > 10 and self.tick <= 20:
+            self.image = pygame.transform.scale(Anim_enemy[1], (self.w, self.h))
+        if self.tick > 20 and self.tick <= 30:
+            self.image = pygame.transform.scale(Anim_enemy[2], (self.w, self.h))
+            self.tick = 0
+        self.tick += 1
 
 class Player(Character):
     def __init__(self, image, w, h, coords, speed_x, speed_y, hp, *groups):
@@ -48,6 +61,16 @@ class Player(Character):
     def update(self, *args):
         if args:
             self.move(args[0])
+        if self.tick <= 10:
+            self.image = pygame.transform.scale(Anim_player[0], (self.w, self.h))
+        if self.tick > 10 and self.tick <= 20:
+            self.image = pygame.transform.scale(Anim_player[1], (self.w, self.h))
+        if self.tick > 20 and self.tick <= 30:
+            self.image = pygame.transform.scale(Anim_player[2], (self.w, self.h))
+            self.tick = 0
+        self.tick += 1
+
+
 
     def move(self, screen_size):
         self.speed_y = 0

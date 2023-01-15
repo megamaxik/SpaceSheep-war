@@ -29,6 +29,9 @@ mobs = pygame.sprite.Group()
 img_dir = path.join(path.dirname(__file__), 'images')
 bg = pygame.image.load("images\Space.png").convert_alpha()
 bg = pygame.transform.scale(bg, (1400, 1000))
+#bg2 = pygame.image.load("images/backround_asteroids.png").convert_alpha()
+#bg2 = pygame.transform.scale(bg, (1400, 1000))
+#Asteroids = pygame.image.load(path.join(img_dir, "Asteroid.png")).convert()
 player_img = pygame.image.load(path.join(img_dir, "SpaceSheep.png")).convert()
 enemy_img = pygame.image.load(path.join(img_dir, "enemy.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "shot.png")).convert()
@@ -99,6 +102,8 @@ def start_game():
                     expl_sounds[2].play()
                 all_sprites.remove(player)
                 running = False
+        #if dif == 0.75:
+            #screen.blit(bg2, (0, 0))
         screen.blit(bg, (0, 0))
         all_sprites.draw(screen)
         screen.blit(font.render(text, True, (180, 0, 0)), (550, 10))
