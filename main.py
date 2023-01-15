@@ -30,7 +30,7 @@ bg = pygame.image.load("images\Space.png").convert_alpha()
 bg = pygame.transform.scale(bg, (1400, 1000))
 bg2 = pygame.image.load("images/backround_asteroids.png").convert_alpha()
 bg2 = pygame.transform.scale(bg2, (1400, 1000))
-#Asteroids = pygame.image.load(path.join(img_dir, "Asteroid.png")).convert()
+
 player_img = pygame.image.load(path.join(img_dir, "SpaceSheep.png")).convert()
 enemy_img = pygame.image.load(path.join(img_dir, "enemy.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "shot.png")).convert()
@@ -66,10 +66,10 @@ def start_game():
     all_sprites = pygame.sprite.Group()
     player = Player(player_img, 160, 100, (WIDTH - (WIDTH - 100), HEIGHT / 2), 0, 0, 100, all_sprites)
     for _ in range(int(8 * dif)):
-        x = random.randint(1, 200)
+        x = random.randint(100, 500)
         Enemy(enemy_img, 160, 100, (WIDTH - x, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
     running = True
-    counter, text = 300, "Время до взрыва: 300".rjust(3)
+    counter, text = 100, "Время до взрыва: 100".rjust(3)
     pygame.time.set_timer(pygame.USEREVENT, 1000)
     font = pygame.font.SysFont(None, 36)
     kills = 0
@@ -79,7 +79,7 @@ def start_game():
             if event.type == pygame.USEREVENT:
                 counter -= 1
                 if kills >= 100 * dif:
-                    text = "ВЫ ВЫЙГРАЛИ!"
+                    text = "ВЫ ВЫИГРАЛИ!"
                     font = pygame.font.SysFont(None, 100)
                 else:
                     text = "Время до взрыва: " + str(counter).rjust(3) + "  Количество очков: " + str(kills).rjust(3) if counter > 0 else 'время вышло!'
@@ -96,12 +96,11 @@ def start_game():
         for _ in hits:
             if issound:
                 expl_sounds[1].play()
-            if kills <= 101 - (10 * dif):
+            if kills <= (100 * dif + 1) - (10 * dif):
                 Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
             else:
                 pass
             kills += 1
-            print(kills)
         hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_rect_ratio(0.9))
         for _ in hits:
             player.hp -= int(10 * dif)
@@ -134,16 +133,11 @@ def set_difficulty(value, difficulty):
 
 
 def start_menu():
-    bg = pygame.image.load("images\Space.png").convert_alpha()
-    bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
-    player_img = pygame.image.load(path.join(img_dir, "SpaceSheep.png")).convert()
-    enemy_img = pygame.image.load(path.join(img_dir, "enemy.png")).convert()
-    bullet_img = pygame.image.load(path.join(img_dir, "shot.png")).convert()
     menu = pygame_menu.Menu('   Space Sheep War', 400, 400, theme=pygame_menu.themes.THEME_DARK)
-    menu.add.selector("Sound :", [("on", True), ("off", False)], onchange=set_sound)
-    menu.add.selector('Difficulty :', [('Easy', 0.75), ('normal', 1), ('Hard', 2)], onchange=set_difficulty)
-    menu.add.button('Play', start_game)
-    menu.add.button('Quit', pygame_menu.events.EXIT)
+    menu.add.selector("Звук :", [("вкл.", True), ("выкл.", False)], onchange=set_sound)
+    menu.add.selector('Сложность :', [('легко', 0.75), ('средне', 1), ('тяжело', 2)], onchange=set_difficulty)
+    menu.add.button('Играть', start_game)
+    menu.add.button('Выход', pygame_menu.events.EXIT)
     menu.mainloop(screen)
     pygame.quit()
 
