@@ -23,14 +23,13 @@ pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
-all_sprites = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 img_dir = path.join(path.dirname(__file__), 'images')
 bg = pygame.image.load("images\Space.png").convert_alpha()
 bg = pygame.transform.scale(bg, (1400, 1000))
-#bg2 = pygame.image.load("images/backround_asteroids.png").convert_alpha()
-#bg2 = pygame.transform.scale(bg, (1400, 1000))
+bg2 = pygame.image.load("images/backround_asteroids.png").convert_alpha()
+bg2 = pygame.transform.scale(bg2, (1400, 1000))
 #Asteroids = pygame.image.load(path.join(img_dir, "Asteroid.png")).convert()
 player_img = pygame.image.load(path.join(img_dir, "SpaceSheep.png")).convert()
 enemy_img = pygame.image.load(path.join(img_dir, "enemy.png")).convert()
@@ -64,19 +63,27 @@ issound = True
 
 
 def start_game():
+    all_sprites = pygame.sprite.Group()
     player = Player(player_img, 160, 100, (WIDTH - (WIDTH - 100), HEIGHT / 2), 0, 0, 100, all_sprites)
     for _ in range(int(8 * dif)):
-        Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
+        x = random.randint(1, 200)
+        Enemy(enemy_img, 160, 100, (WIDTH - x, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
     running = True
-    counter, text = 300, "300".rjust(3)
+    counter, text = 300, "Время до взрыва: 300".rjust(3)
     pygame.time.set_timer(pygame.USEREVENT, 1000)
-    font = pygame.font.SysFont(None, 72)
+    font = pygame.font.SysFont(None, 36)
+    kills = 0
     while running:
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.USEREVENT:
                 counter -= 1
-                text = "Время до взрыва: " + str(counter).rjust(3) if counter > 0 else 'время вышло!'
+                if kills >= 100 * dif:
+                    text = "ВЫ ВЫЙГРАЛИ!"
+                    font = pygame.font.SysFont(None, 100)
+                else:
+                    text = "Время до взрыва: " + str(counter).rjust(3) + "  Количество очков: " + str(kills).rjust(3) if counter > 0 else 'время вышло!'
+
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
@@ -88,10 +95,14 @@ def start_game():
         hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
         for _ in hits:
             if issound:
-                Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
                 expl_sounds[1].play()
-
-        hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_rect_ratio(0.6))
+            if kills <= 101 - (10 * dif):
+                Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
+            else:
+                pass
+            kills += 1
+            print(kills)
+        hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_rect_ratio(0.9))
         for _ in hits:
             player.hp -= int(10 * dif)
             Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, mobs, all_sprites)
@@ -102,9 +113,10 @@ def start_game():
                     expl_sounds[2].play()
                 all_sprites.remove(player)
                 running = False
-        #if dif == 0.75:
-            #screen.blit(bg2, (0, 0))
-        screen.blit(bg, (0, 0))
+        if dif == 0.75:
+            screen.blit(bg2, (0, 0))
+        else:
+            screen.blit(bg, (0, 0))
         all_sprites.draw(screen)
         screen.blit(font.render(text, True, (180, 0, 0)), (550, 10))
         draw_hp_bar(screen, 5, 5, player.hp)
