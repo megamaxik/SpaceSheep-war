@@ -4,7 +4,7 @@ import pygame_menu
 from os import path
 from character import Enemy, Player
 
-
+a = open("score.txt","r").readline()
 WIDTH = 1400
 HEIGHT = 1000
 FPS = 60
@@ -134,9 +134,17 @@ def start_game():
                 screen.blit(bg3, (0, 0))
             else:
                 screen.blit(bg4, (0, 0))
-            screen.blit(font.render(text, True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 - 200))
-            screen.blit(font.render("Счет:" + str(counter * kills), True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 - 100))
-            screen.blit(font.render("Нажмите esc для выхода", True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2))
+            if int(a) > counter * kills:
+                score = a
+            else:
+                f = open("score.txt",'w')
+                score = counter * kills
+                f.write(str(counter * kills))
+            screen.blit(font.render(text, True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 - 100))
+            screen.blit(font.render("Счет:" + str(counter * kills), True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 - 50))
+            screen.blit(font.render("Рекорд:" + str(score), True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2))
+            screen.blit(font.render("Нажмите esc для выхода", True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 + 50))
+
         pygame.display.flip()
 
 def set_sound(value, sound):
