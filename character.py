@@ -21,12 +21,12 @@ class Character(pygame.sprite.Sprite):
 
 
 class Enemy(Character):
-    def __init__(self, image, w, h, coords, speed_x, *groups):
+    def __init__(self, image, w, h, coords, speed_x,isaster, *groups):
         super().__init__(image, w, h, *groups)
         self.rect.x = coords[0]
         self.rect.y = coords[1]
         self.speed_x = speed_x
-
+        self.isaster = isaster
     def move(self, screen_size):
         self.rect.x += self.speed_x
         if self.rect.left < 0 + 10:
@@ -40,13 +40,16 @@ class Enemy(Character):
                 self.rect.y = random.randrange(args[1] - self.rect.height)
                 self.rect.x = args[0] - 50
                 self.speedx = -3
-        if self.tick <= 10:
-            self.image = pygame.transform.scale(Anim_enemy[0], (self.w, self.h))
-        if self.tick > 10 and self.tick <= 20:
-            self.image = pygame.transform.scale(Anim_enemy[1], (self.w, self.h))
-        if self.tick > 20 and self.tick <= 30:
-            self.image = pygame.transform.scale(Anim_enemy[2], (self.w, self.h))
-            self.tick = 0
+        if self.isaster == False:
+            if self.tick <= 10:
+                self.image = pygame.transform.scale(Anim_enemy[0], (self.w, self.h))
+            if self.tick > 10 and self.tick <= 20:
+                self.image = pygame.transform.scale(Anim_enemy[1], (self.w, self.h))
+            if self.tick > 20 and self.tick <= 30:
+                self.image = pygame.transform.scale(Anim_enemy[2], (self.w, self.h))
+                self.tick = 0
+        else:
+            self.image = pygame.transform.scale(self.image, (self.w, self.h))
         self.tick += 1
 
 class Player(Character):
