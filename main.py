@@ -4,7 +4,7 @@ import pygame_menu
 from os import path
 from character import Enemy, Player
 
-a = open("score.txt","r").readline()
+a = open("score.txt", "r").readline()
 WIDTH = 1400
 HEIGHT = 1000
 FPS = 60
@@ -26,7 +26,7 @@ clock = pygame.time.Clock()
 bullets = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 img_dir = path.join(path.dirname(__file__), 'images')
-bg = pygame.image.load("images\Space.png").convert_alpha()
+bg = pygame.image.load("images/Space.png").convert_alpha()
 bg = pygame.transform.scale(bg, (1400, 1000))
 bg2 = pygame.image.load("images/backround_asteroids.png").convert_alpha()
 bg2 = pygame.transform.scale(bg2, (1400, 1000))
@@ -54,16 +54,13 @@ expl_sounds = [*load_music_files('shoot.mp3', 'expl1.mp3', 'expl2.wav', 'expl3.m
 def draw_hp_bar(surf, x, y, pct):
     if pct < 0:
         pct = 0
-    BAR_LENGTH = 250
-    BAR_HEIGHT = 25
-    fill = (pct / 100) * BAR_LENGTH
-    outline_rect = pygame.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
-    fill_rect = pygame.Rect(x, y, fill, BAR_HEIGHT)
+    bar_lenght = 250
+    bar_height = 25
+    fill = (pct / 100) * bar_lenght
+    outline_rect = pygame.Rect(x, y, bar_lenght, bar_height)
+    fill_rect = pygame.Rect(x, y, fill, bar_height)
     pygame.draw.rect(surf, GREEN, fill_rect)
     pygame.draw.rect(surf, WHITE, outline_rect, 2)
-
-
-issound = True
 
 
 def start_game():
@@ -72,9 +69,9 @@ def start_game():
     for _ in range(int(8 * dif)):
         x = random.randint(100, 500)
         if dif == 0.75:
-            Enemy(aster_img, 160, 100, (WIDTH - x, random.randrange(HEIGHT - 100)), -3, True, mobs, all_sprites)
+            Enemy(aster_img, 160, 100, (WIDTH - x, random.randrange(HEIGHT - 100)), -3, False, mobs, all_sprites)
         else:
-            Enemy(enemy_img, 160, 100, (WIDTH - x, random.randrange(HEIGHT - 100)), -3, False, mobs, all_sprites)
+            Enemy(enemy_img, 160, 100, (WIDTH - x, random.randrange(HEIGHT - 100)), -3, True, mobs, all_sprites)
     running = True
     counter, text = 100, "Время до взрыва: 100".rjust(3)
     pygame.time.set_timer(pygame.USEREVENT, 1000)
@@ -86,7 +83,8 @@ def start_game():
             if event.type == pygame.USEREVENT:
                 if kills != 100 * dif and player.hp > 0:
                     counter -= 1
-                    text = "Время до взрыва: " + str(counter).rjust(3) + "  Целей уничтожено: " + str(kills).rjust(3) if counter > 0 else 'время вышло!'
+                    text = "Время до взрыва: " + str(counter).rjust(3) + "  Целей уничтожено: "\
+                           + str(kills).rjust(3) if counter > 0 else 'время вышло!'
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
@@ -103,17 +101,19 @@ def start_game():
                 expl_sounds[1].play()
             if kills <= (100 * dif + 1) - (10 * dif):
                 if dif == 0.75:
-                    Enemy(aster_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, True, mobs, all_sprites)
+                    Enemy(aster_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)),
+                          -3, False, mobs, all_sprites)
                 else:
-                    Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, False, mobs, all_sprites)
+                    Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)),
+                          -3, True, mobs, all_sprites)
             kills += 1
         hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_rect_ratio(0.9))
         for _ in hits:
             player.hp -= int(10 * dif)
             if dif == 0.75:
-                Enemy(aster_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, True, mobs, all_sprites)
+                Enemy(aster_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, False, mobs, all_sprites)
             else:
-                Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, False, mobs, all_sprites)
+                Enemy(enemy_img, 160, 100, (WIDTH - 50, random.randrange(HEIGHT - 100)), -3, True, mobs, all_sprites)
             if issound:
                 expl_sounds[3].play()
             if player.hp <= 0:
@@ -128,7 +128,7 @@ def start_game():
         if kills != 100 * dif:
             draw_hp_bar(screen, 5, 5, player.hp)
         if kills != 100 * dif:
-            screen.blit(font.render(text, True, (180, 0, 0)), (100, 10))
+            screen.blit(font.render(text, True, (180, 0, 0)), (270, 10))
         if kills == 100 * dif or player.hp <= 0:
             if kills == 100 * dif:
                 screen.blit(bg3, (0, 0))
@@ -137,15 +137,17 @@ def start_game():
             if int(a) > counter * kills:
                 score = a
             else:
-                f = open("score.txt",'w')
+                f = open("score.txt", 'w')
                 score = counter * kills
                 f.write(str(counter * kills))
             screen.blit(font.render(text, True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 - 100))
-            screen.blit(font.render("Счет:" + str(counter * kills), True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 - 50))
+            screen.blit(font.render("Счет:" + str(counter * kills),
+                                    True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 - 50))
             screen.blit(font.render("Рекорд:" + str(score), True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2))
             screen.blit(font.render("Нажмите esc для выхода", True, (0, 180, 0)), (WIDTH // 2 - 200, HEIGHT // 2 + 50))
 
         pygame.display.flip()
+
 
 def set_sound(value, sound):
     global issound
